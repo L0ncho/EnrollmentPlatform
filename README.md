@@ -36,7 +36,7 @@ src/main/java/com/duoc/enrollmentplatform/
 └── factory/                # EnrollmentPlatformFactory, ApplicationConfiguration
 
 src/main/resources/
-├── application.properties          # Perfil activo por defecto: local
+├── application.properties          # Base; perfil: ${SPRING_PROFILES_ACTIVE:local}
 ├── application-local.properties    # H2 in-memory + Flyway
 ├── application-prod.properties     # Oracle Autonomous (variables de entorno)
 └── db/migration/
@@ -44,51 +44,30 @@ src/main/resources/
     └── V2__seed_data.sql           # Datos iniciales en español
 ```
 
-## Ejecución local (H2)
+## Ejecutar
 
-El perfil `local` usa H2 in-memory. No requiere configuración de base de datos.
+**Perfil `local` (H2)**
 
 ```bash
-# Clonar y compilar
-./mvnw clean package -DskipTests
-
-# Ejecutar (perfil local por defecto)
-./mvnw spring-boot:run
+./run-local.sh
 ```
 
-La aplicación arranca en `http://localhost:8080`. Endpoints disponibles:
-
-
-| Método | URL                | Descripción                        |
-| ------ | ------------------ | ---------------------------------- |
-| GET    | `/courses`         | Lista los cursos disponibles       |
-| POST   | `/courses`         | Agrega un nuevo curso              |
-| POST   | `/enrollments`     | Inscribe a un estudiante en cursos |
-| GET    | `/actuator/health` | Estado de la aplicación            |
-| GET    | `/h2-console`      | Consola H2 (solo perfil local)     |
-
-
-## Ejecución con Oracle Cloud (prod)
-
-Copiar `.env.example` a `.env` y completar las variables de conexión:
+**Perfil `prod` (Oracle)** — crear `.env` desde `.env.example` con credenciales Oracle:
 
 ```bash
 cp .env.example .env
-# Editar .env con las credenciales de Oracle Autonomous
+./run-prod.sh
 ```
 
-Spring Boot no carga `.env` automáticamente. Exportar las variables antes de ejecutar:
+Base URL: `http://localhost:8080`
 
-```bash
-export SPRING_PROFILES_ACTIVE=prod
-export SPRING_DATASOURCE_URL=jdbc:oracle:thin:@...
-export SPRING_DATASOURCE_USERNAME=...
-export SPRING_DATASOURCE_PASSWORD=...
-
-./mvnw spring-boot:run
-```
-
-Flyway ejecuta las mismas migraciones (`V1__schema.sql` y `V2__seed_data.sql`) al conectarse a Oracle por primera vez.
+| Método | URL                | Descripción                  |
+| ------ | ------------------ | ---------------------------- |
+| GET    | `/courses`         | Lista cursos                 |
+| POST   | `/courses`         | Crea curso                   |
+| POST   | `/enrollments`     | Inscribe estudiante          |
+| GET    | `/actuator/health` | Health check                 |
+| GET    | `/h2-console`      | Consola H2 (solo perfil local) |
 
 ## Ejecutar tests
 
