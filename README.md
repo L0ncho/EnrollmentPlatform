@@ -180,30 +180,12 @@ Verificar: `curl http://localhost:8080/actuator/health`
 
 ### CI/CD (GitHub Actions + Docker Hub + EC2)
 
+Guía paso a paso (secrets, EC2, push a `main`, verificación): **[docs/guia-despliegue-ec2.md](docs/guia-despliegue-ec2.md)**.
+
 | Evento | Acción |
 | ------ | ------ |
 | Pull request → `main` | `./mvnw test` |
 | Push → `main` | Tests, build/push imagen, deploy SSH a EC2 |
-
-**Secrets en el repositorio GitHub:**
-
-| Secret | Uso |
-| ------ | --- |
-| `DOCKERHUB_USERNAME` / `DOCKERHUB_TOKEN` | Publicar imagen `usuario/enrollment-platform:latest` |
-| `ORACLE_WALLET_BASE64` | Zip de `Wallet_ENROLLMENTPLATFORMDB` en base64 (ver abajo) |
-| `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` | Credenciales Oracle en el contenedor |
-| `SPRING_DATASOURCE_URL` | Opcional; por defecto `@enrollmentplatformdb_high` |
-| `EC2_SSH_KEY`, `EC2_HOST`, `USER_SERVER` | Deploy por SSH |
-| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_SESSION_TOKEN` | Credenciales AWS (token solo si son temporales) |
-
-Generar `ORACLE_WALLET_BASE64` (una vez):
-
-```bash
-zip -r wallet.zip Wallet_ENROLLMENTPLATFORMDB
-base64 -i wallet.zip | pbcopy
-```
-
-En EC2 también puedes usar `docker compose up` con `.env` y la imagen de Docker Hub (`DOCKERHUB_USERNAME` en `.env` si usas `image:` en lugar de `build`).
 
 ## Errores
 
