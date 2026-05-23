@@ -1,6 +1,6 @@
 name: Build and Push Docker Image
 on:
-  push: #prueba de despliege
+  push: 
     branches:
       - main
 jobs:
